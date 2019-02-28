@@ -1,4 +1,4 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+﻿// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
 
 #include "SSimpleLoadingScreen.h"
 
@@ -14,6 +14,9 @@
 #include "SDPIScaler.h"
 #include "Engine/Texture2D.h"
 #include "Engine/UserInterfaceSettings.h"
+
+#include "Internationalization/Internationalization.h"
+#include "Internationalization/Culture.h"
 
 #define LOCTEXT_NAMESPACE "LoadingScreen"
 
@@ -31,16 +34,27 @@ void SSimpleLoadingScreen::Construct(const FArguments& InArgs, const FLoadingScr
 
 	TSharedRef<SOverlay> Root = SNew(SOverlay);
 
-	// If there's an image defined
+	//Если ессть картинки
 	if ( InScreenDescription.Images.Num() > 0 )
 	{
+		//Рандом выбор картинки
 		int32 ImageIndex = FMath::RandRange(0, InScreenDescription.Images.Num() - 1);
+
+		//Загрузка в память
 		const FStringAssetReference& ImageAsset = InScreenDescription.Images[ImageIndex];
 		UObject* ImageObject = ImageAsset.TryLoad();
+
+		//Конвертируем в объект
 		if ( UTexture2D* LoadingImage = Cast<UTexture2D>(ImageObject) )
 		{
-			FVector2D Size = FVector2D(LoadingImage->GetSizeX(), LoadingImage->GetSizeY());
-			LoadingScreenBrush = MakeShareable(new FLoadingScreenBrush(LoadingImage, Size, FName(*ImageAsset.ToString())));
+			//Размер картинки
+			FIntPoint TextureSize = LoadingImage->GetImportedSize();
+
+			//Создаем кисть компонет
+			DynamicBrush = FDeferredCleanupSlateBrush::CreateBrush(LoadingImage, FVector2D((float)TextureSize.X, (float)TextureSize.Y));
+
+			//Создаем Slate кисть
+			SlateBrush = DynamicBrush->GetSlateBrush();
 
 			Root->AddSlot()
 			.HAlign(HAlign_Fill)
@@ -50,17 +64,21 @@ void SSimpleLoadingScreen::Construct(const FArguments& InArgs, const FLoadingScr
 				.Stretch(InScreenDescription.ImageStretch)
 				[
 					SNew(SImage)
-					.Image(LoadingScreenBrush.Get())
+					.Image(SlateBrush)//Назначаем Slate кисть
 				]
 			];
 		}
 	}
 
 	TSharedRef<SWidget> TipWidget = SNullWidget::NullWidget;
-	if ( Settings->Tips.Num() > 0 )
+
+	//Подсказки-сообщения
+	if (InScreenDescription.bEnableTips && Settings->Tips.Num() > 0 )
 	{
+		//Рандом выбор подсказки-сообщения
 		int32 TipIndex = FMath::RandRange(0, Settings->Tips.Num() - 1);
 
+		//Создаем виджет ТекстБлок
 		TipWidget = SNew(STextBlock)
 			.WrapTextAt(Settings->TipWrapAt)
 			.Font(TipFont)
@@ -93,7 +111,7 @@ void SSimpleLoadingScreen::Construct(const FArguments& InArgs, const FLoadingScr
 					.AutoWidth()
 					[
 						SNew(SCircularThrobber)
-						// Convert font size to pixels, pixel_size = point_size * resolution / 72, then half it to get radius
+						// Преобразовать размер шрифта в пиксели, pixel_size = point_size * resolution / 72, затем наполовину уменьшить радиус
 						.Radius((LoadingFont.Size * 96.0f/72.0f) / 2.0f)
 					]
 

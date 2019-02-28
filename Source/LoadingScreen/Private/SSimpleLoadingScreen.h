@@ -1,29 +1,11 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+﻿// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
+#include "Slate/DeferredCleanupSlateBrush.h"
+
 #include "SCompoundWidget.h"
 #include "LoadingScreenSettings.h"
-
-/**
-* Special brush to prevent garbage collection
-*/
-struct FLoadingScreenBrush : public FSlateDynamicImageBrush, public FGCObject
-{
-	FLoadingScreenBrush(class UTexture2D* InTexture, const FVector2D& InImageSize, const FName InImagePath)
-		: FSlateDynamicImageBrush(InTexture, InImageSize, InImagePath)
-	{
-	}
-
-	virtual void AddReferencedObjects(FReferenceCollector& Collector) override
-	{
-		UObject* Object = GetResourceObject();
-		if (Object)
-		{
-			Collector.AddReferencedObject(Object);
-		}
-	}
-};
 
 class SSimpleLoadingScreen : public SCompoundWidget
 {
@@ -41,6 +23,7 @@ private:
 	float GetDPIScale() const;
 	
 private:
-	TSharedPtr<FLoadingScreenBrush> LoadingScreenBrush;
+	const FSlateBrush* SlateBrush;
+	TSharedPtr<FDeferredCleanupSlateBrush> DynamicBrush;
 	float LastComputedDPIScale;
 };

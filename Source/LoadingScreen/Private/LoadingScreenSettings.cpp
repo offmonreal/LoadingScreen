@@ -3,6 +3,8 @@
 #include "LoadingScreenSettings.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/Font.h"
+//#include "Internationalization/Internationalization.h"
+//#include "Internationalization/Culture.h"
 
 #define LOCTEXT_NAMESPACE "LoadingScreen"
 
@@ -12,13 +14,25 @@ FLoadingScreenDescription::FLoadingScreenDescription()
 	, bMoviesAreSkippable(true)
 	, bWaitForManualStop(false)
 	, bShowUIOverlay(true)
+	, bEnableTips(false)
 	, LoadingText(LOCTEXT("Loading", "LOADING"))
 	, ImageStretch(EStretch::ScaleToFit)
 {
+
+	/*FString test = FInternationalization::Get().GetCurrentLanguage().Get().GetName();
+
+	if (test == "ru")
+		return;
+	else
+	{
+		//FInternationalization::Get().SetCurrentCulture("ru");
+		int x = 200;
+		x++;
+		x = x * 200;
+	}*/
 }
 
-ULoadingScreenSettings::ULoadingScreenSettings(const FObjectInitializer& Initializer)
-	: Super(Initializer)
+ULoadingScreenSettings::ULoadingScreenSettings(const FObjectInitializer& Initializer): Super(Initializer)
 {
 	TipWrapAt = 1000.0f;
 

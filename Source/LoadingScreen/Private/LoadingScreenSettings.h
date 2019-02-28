@@ -1,4 +1,4 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+﻿// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
 
 #pragma once
 
@@ -17,49 +17,53 @@ struct LOADINGSCREEN_API FLoadingScreenDescription
 
 	FLoadingScreenDescription();
 
-	/** The minimum time that a loading screen should be opened for, -1 if there is no minimum time. */
+	/** Минимальное время, в течение которого должен быть открыт экран загрузки, -1, если минимального времени нет. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Loading)
 	float MinimumLoadingScreenDisplayTime;
 	
-	/** If true, the loading screen will disappear as soon as loading is done. */
+	/** Если TRUE, экран загрузки исчезнет, как только загрузка будет завершена. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Loading)
 	bool bAutoCompleteWhenLoadingCompletes;
 	
-	/** If true, movies can be skipped by clicking the loading screen as long as loading is done. */
+	/* Если TRUE, ВИДЕО могут быть пропущены, нажав на экран загрузки, пока загрузка не завершена. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Loading)
 	bool bMoviesAreSkippable;
 	
-	/** If true, movie playback continues until Stop is called. */
+	/** Если true, воспроизведение фильма продолжается до тех пор, пока не будет вызван Stop. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Loading)
 	bool bWaitForManualStop;
 	
-	/** Should we just play back, loop, etc.  NOTE: if playback type is MT_LoadingLoop, then MoviePlayer will auto complete when in the last movie and load finishes regardless of bAutoCompleteWhenLoadingCompletes */
+	/** Должны ли мы просто воспроизводить, зацикливать и т. Д. ПРИМЕЧАНИЕ. Если тип воспроизведения - MT_LoadingLoop, MoviePlayer автоматически завершит работу в последнем фильме и загрузка завершится независимо от bAutoCompleteWhenLoadingCompletes. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Loading)
 	TEnumAsByte<EMoviePlaybackType> PlaybackType;
 
-	/** The movie paths local to the game's Content/Movies/ directory without extension. */
+	/** Пути к фильмам Content/Movies/ directory without extension. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Movies)
 	TArray<FString> MoviePaths;
 
-	/**  Should we show the images/tips/loading text?  Generally you'll want to set this to false if you just want to show a movie. */
+	/** Должны ли мы показать images/tips/loading text?  Как правило, вы хотите установить значение false, если вы просто хотите показать фильм */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Display)
 	bool bShowUIOverlay;
 
-	/**  Text displayed beside the animated icon */
+	/** Текст отображается рядом с анимированной иконкой  */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Display)
 	FText LoadingText;
 
-	/** The texture display while in the loading screen on top of the movie. */
+	/** Разрешать показ сообщений в правом нижнем углу  */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Display)
+	bool bEnableTips;
+
+	/** Текстура отображается на экране загрузки в верхней части фильма. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Images, meta=(AllowedClasses="Texture2D"))
 	TArray<FStringAssetReference> Images;
 
-	/** The scaling type to apply to images. */
+	/** Тип масштабирования, применяемый к изображениям. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Images)
 	TEnumAsByte<EStretch::Type> ImageStretch;
 };
 
 /**
- * Settings for the simple loading screen plugin.
+ * Настройки для простого загрузочного экрана плагина.
  */
 UCLASS(config=Game, defaultconfig, meta=(DisplayName="Loading Screen"))
 class LOADINGSCREEN_API ULoadingScreenSettings : public UDeveloperSettings
@@ -68,27 +72,27 @@ class LOADINGSCREEN_API ULoadingScreenSettings : public UDeveloperSettings
 
 public:
 
-	/** The startup screen for the project. */
+	/** Экран запуска проекта. */
 	UPROPERTY(config, EditAnywhere, Category=Screens)
 	FLoadingScreenDescription StartupScreen;
 
-	/** The default load screen between maps. */
+	/** Экран загрузки по умолчанию между картами. */
 	UPROPERTY(config, EditAnywhere, Category=Screens)
 	FLoadingScreenDescription DefaultScreen;
 
-	/** The font to display the tips in. */
+	/** Шрифт для отображения подсказок. */
 	UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category=Advice)
 	FSlateFontInfo TipFont;
 
-	/** The font to display on loading. */
+	/** Шрифт для отображения при загрузке. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Display)
 	FSlateFontInfo LoadingFont;
 
-	/** The size of the tip before it's wrapped to the next line. */
+	/** Размер кончика до его переноса на следующую строку. */
 	UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category=Advice)
 	float TipWrapAt;
 
-	/** The tips to display on the load screen. */
+	/** Подсказки для отображения на экране загрузки. */
 	UPROPERTY(config, EditAnywhere, BlueprintReadWrite, Category=Advice)
 	TArray<FText> Tips;
 };

@@ -1,4 +1,4 @@
-// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
+﻿// Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
 
 #include "ILoadingScreenModule.h"
 #include "LoadingScreenSettings.h"
@@ -30,7 +30,6 @@ IMPLEMENT_MODULE(FLoadingScreenModule, LoadingScreen)
 
 FLoadingScreenModule::FLoadingScreenModule()
 {
-
 }
 
 void FLoadingScreenModule::StartupModule()
@@ -53,8 +52,8 @@ void FLoadingScreenModule::StartupModule()
 			GetMoviePlayer()->OnPrepareLoadingScreen().AddRaw(this, &FLoadingScreenModule::HandlePrepareLoadingScreen);
 		}
 
-		// Prepare the startup screen, the PrepareLoadingScreen callback won't be called
-		// if we've already explictly setup the loading screen.
+		// Подготовка экрана запуска, обратный вызов PrepareLoadingScreen не будет вызываться
+		// если мы уже явно настроили экран загрузки.
 		BeginLoadingScreen(Settings->StartupScreen);
 	}
 }
